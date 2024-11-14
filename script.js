@@ -21,51 +21,68 @@ searchInput.addEventListener("keyup", function() {
     filtrerRecettes(searchValue);
 });
 
+function afficherAucuneRecette(searchValue) {
+    const messageElement = document.createElement("p");
+    messageElement.textContent = `Aucune recette ne correspond à "${searchValue}"`;
+    messageElement.style.textAlign = "center";
+    messageElement.style.fontSize = "1.5em";
+    messageElement.style.color = "#f00";  // Pour que le message soit rouge, par exemple
+    recettesContainer.innerHTML = "";  // Vider les recettes
+    recettesContainer.appendChild(messageElement);  // Ajouter le message
+}
+
 // Fonction pour afficher les recettes
 function afficherRecettes(recettes) {
     recettesContainer.innerHTML = ""; // Vider le conteneur
-    recettes.forEach(recette => {
-        const card = document.createElement("div");
-        card.classList.add("recette-card");
 
-        const img = document.createElement("img");
-        img.src = `images/JSON recipes/${recette.image}`;
-        img.alt = recette.name;
+    // Vérifier si des recettes existent après le filtrage
+    if (recettes.length === 0) {
+        afficherAucuneRecette(searchInput.value);  // Afficher le message si aucune recette ne correspond
+    } else {
+        recettes.forEach(recette => {
+            const card = document.createElement("div");
+            card.classList.add("recette-card");
 
-        const title = document.createElement("h2");
-        title.textContent = recette.name;
+            const img = document.createElement("img");
+            img.src = `images/JSON recipes/${recette.image}`;
+            img.alt = recette.name;
 
-        const ingredientsTitle = document.createElement("h3");
-        ingredientsTitle.textContent = "Ingrédients";
-        const ingredientsList = document.createElement("ul");
-        recette.ingredients.forEach(ingredient => {
-            const ingredientItem = document.createElement("li");
-            const quantity = ingredient.quantity ? `${ingredient.quantity} ` : "";
-            const unit = ingredient.unit ? `${ingredient.unit} ` : "";
-            ingredientItem.textContent = `${quantity}${unit}${ingredient.ingredient}`;
-            ingredientsList.appendChild(ingredientItem);
+            const title = document.createElement("h2");
+            title.textContent = recette.name;
+
+            const ingredientsTitle = document.createElement("h3");
+            ingredientsTitle.textContent = "Ingrédients";
+            const ingredientsList = document.createElement("ul");
+            recette.ingredients.forEach(ingredient => {
+                const ingredientItem = document.createElement("li");
+                const quantity = ingredient.quantity ? `${ingredient.quantity} ` : "";
+                const unit = ingredient.unit ? `${ingredient.unit} ` : "";
+                ingredientItem.textContent = `${quantity}${unit}${ingredient.ingredient}`;
+                ingredientsList.appendChild(ingredientItem);
+            });
+
+            const appliance = document.createElement("p");
+            appliance.classList.add("details");
+            appliance.innerHTML = `<strong>Appareil :</strong> ${recette.appliance}`;
+
+            const ustensils = document.createElement("p");
+            ustensils.classList.add("details");
+            ustensils.innerHTML = `<strong>Ustensiles :</strong> ${recette.ustensils.join(", ")}`;
+
+            card.appendChild(img);
+            card.appendChild(title);
+            card.appendChild(ingredientsTitle);
+            card.appendChild(ingredientsList);
+            card.appendChild(appliance);
+            card.appendChild(ustensils);
+
+            recettesContainer.appendChild(card);
         });
 
-        const appliance = document.createElement("p");
-        appliance.classList.add("details");
-        appliance.innerHTML = `<strong>Appareil :</strong> ${recette.appliance}`;
-
-        const ustensils = document.createElement("p");
-        ustensils.classList.add("details");
-        ustensils.innerHTML = `<strong>Ustensiles :</strong> ${recette.ustensils.join(", ")}`;
-
-        card.appendChild(img);
-        card.appendChild(title);
-        card.appendChild(ingredientsTitle);
-        card.appendChild(ingredientsList);
-        card.appendChild(appliance);
-        card.appendChild(ustensils);
-
-        recettesContainer.appendChild(card);
-    });
-
-    mettreAJourCompteur(recettes);  // Mettre à jour le compteur
+        mettreAJourCompteur(recettes);  // Mettre à jour le compteur
+    }
 }
+
 
 // Fonction pour mettre à jour le compteur
 function mettreAJourCompteur(recettesFiltrees) {
@@ -86,3 +103,4 @@ function filtrerRecettes(searchValue) {
     afficherRecettes(recettesFiltrees);
     mettreAJourCompteur(recettesFiltrees);
 }
+
