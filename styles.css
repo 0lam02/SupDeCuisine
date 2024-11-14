@@ -1,17 +1,27 @@
 header {
     background-image: url("images/header.jpg");
+    background-size: cover;
     background-repeat: no-repeat;
+    height: 450px;
 }
 
-h1 {
+
+header h1 {
+    text-align: center;
+    padding-top: 15%;
     color: yellow;
     align-content: center;
 }
 
-div {
+header div {
+    padding-top: 5%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#myInput{
+    width: 500px;
 }
 
 #recettes-container {
