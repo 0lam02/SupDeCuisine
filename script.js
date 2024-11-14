@@ -122,5 +122,7 @@ function filtrerRecettes() {
     mettreAJourCompteur(recettesFiltrees);
 }
 
+// Ajouter un écouteur d'événement pour le champ de recherche général dans le header
+document.getElementById("myInput").addEventListener("input", filtrerRecettes);
 
 
