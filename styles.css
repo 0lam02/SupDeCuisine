@@ -13,3 +13,27 @@ div {
     justify-content: center;
     align-items: center;
 }
+
+.recette-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    width: 250px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.recette-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.recette-card h2 {
+    font-size: 1.2em;
+    margin: 0.5em 0;
+}
+
+.details {
+    font-size: 0.9em;
+    color: #555;
+}
