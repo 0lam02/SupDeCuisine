@@ -4,6 +4,8 @@ const applianceFilter = document.getElementById("appliance-filter");
 const ustensilFilter = document.getElementById("ustensil-filter");
 let recettesData = [];
 
+exports = { afficherRecettes, filtrerRecettes, mettreAJourCompteur };
+
 // Charger les données JSON
 fetch("recipes.json")
     .then(response => response.json())
@@ -120,5 +122,5 @@ function filtrerRecettes() {
     mettreAJourCompteur(recettesFiltrees);
 }
 
-// Ajouter un écouteur d'événement pour le champ de recherche général dans le header
-document.getElementById("myInput").addEventListener("input", filtrerRecettes);
+
+
