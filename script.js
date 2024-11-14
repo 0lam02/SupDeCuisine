@@ -29,12 +29,9 @@ function afficherRecettes(recettes) {
         const title = document.createElement("h2");
         title.textContent = recette.name;
 
-        // Temps de préparation et portions
-        const details = document.createElement("p");
-        details.classList.add("details");
-        details.textContent = `Temps: ${recette.time} min | Portions: ${recette.servings}`;
-
-        // Ingrédients
+        // Liste des ingrédients
+        const ingredientsTitle = document.createElement("h3");
+        ingredientsTitle.textContent = "Ingrédients";
         const ingredientsList = document.createElement("ul");
         recette.ingredients.forEach(ingredient => {
             const ingredientItem = document.createElement("li");
@@ -44,26 +41,21 @@ function afficherRecettes(recettes) {
             ingredientsList.appendChild(ingredientItem);
         });
 
-        // Description
-        const description = document.createElement("p");
-        description.textContent = recette.description;
-
-        // Ustensiles
-        const ustensils = document.createElement("p");
-        ustensils.classList.add("details");
-        ustensils.textContent = `Ustensiles: ${recette.ustensils.join(", ")}`;
-
-        // Appareil
+        // Appareil utilisé
         const appliance = document.createElement("p");
         appliance.classList.add("details");
-        appliance.textContent = `Appareil: ${recette.appliance}`;
+        appliance.innerHTML = `<strong>Appareil :</strong> ${recette.appliance}`;
 
-        // Ajouter les éléments à la carte
+        // Ustensiles utilisés
+        const ustensils = document.createElement("p");
+        ustensils.classList.add("details");
+        ustensils.innerHTML = `<strong>Ustensiles :</strong> ${recette.ustensils.join(", ")}`;
+
+        // Ajout des éléments à la carte dans l'ordre souhaité
         card.appendChild(img);
         card.appendChild(title);
-        card.appendChild(details);
+        card.appendChild(ingredientsTitle);
         card.appendChild(ingredientsList);
-        card.appendChild(description);
         card.appendChild(appliance);
         card.appendChild(ustensils);
 
