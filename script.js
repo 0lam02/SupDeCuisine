@@ -2,11 +2,10 @@ const recettesContainer = document.getElementById("recettes-container");
 const ingredientFilter = document.getElementById("ingredient-filter");
 const applianceFilter = document.getElementById("appliance-filter");
 const ustensilFilter = document.getElementById("ustensil-filter");
-const searchInput = document.getElementById("myInput");  // Champ de recherche global
 let recettesData = [];
 
 // Charger les données JSON
-fetch("recipes.json")  // Utilisation du nouveau nom du fichier JSON
+fetch("recipes.json")
     .then(response => response.json())
     .then(data => {
         recettesData = data;
@@ -15,29 +14,12 @@ fetch("recipes.json")  // Utilisation du nouveau nom du fichier JSON
     })
     .catch(error => console.error("Erreur:", error));
 
-// Ajouter un écouteur pour l'input de recherche
-searchInput.addEventListener("keyup", function() {
-    const searchValue = searchInput.value.toLowerCase();
-    filtrerRecettes(searchValue);
-});
-
-function afficherAucuneRecette(searchValue) {
-    const messageElement = document.createElement("p");
-    messageElement.textContent = `Aucune recette ne correspond à "${searchValue}"`;
-    messageElement.style.textAlign = "center";
-    messageElement.style.fontSize = "1.5em";
-    messageElement.style.color = "#f00";  // Pour que le message soit rouge, par exemple
-    recettesContainer.innerHTML = "";  // Vider les recettes
-    recettesContainer.appendChild(messageElement);  // Ajouter le message
-}
-
-// Fonction pour afficher les recettes
+// Fonction pour afficher les recettes en fonction des filtres
 function afficherRecettes(recettes) {
     recettesContainer.innerHTML = ""; // Vider le conteneur
-
-    // Vérifier si des recettes existent après le filtrage
     if (recettes.length === 0) {
-        afficherAucuneRecette(searchInput.value);  // Afficher le message si aucune recette ne correspond
+        // Afficher un message s'il n'y a pas de résultats
+        recettesContainer.innerHTML = `<p>Aucune recette ne correspond à votre recherche.</p>`;
     } else {
         recettes.forEach(recette => {
             const card = document.createElement("div");
@@ -78,29 +60,65 @@ function afficherRecettes(recettes) {
 
             recettesContainer.appendChild(card);
         });
-
-        mettreAJourCompteur(recettes);  // Mettre à jour le compteur
     }
 }
 
-
-// Fonction pour mettre à jour le compteur
-function mettreAJourCompteur(recettesFiltrees) {
-    const recipeCountElement = document.getElementById("recipe-count");
-    recipeCountElement.textContent = `${recettesFiltrees.length} recette${recettesFiltrees.length > 1 ? 's' : ''}`;
+// Fonction pour mettre à jour le compteur de recettes affichées
+function mettreAJourCompteur(recettes) {
+    const compteur = document.getElementById("recettes-compteur");
+    compteur.textContent = `${recettes.length} recette(s) trouvée(s)`;
 }
 
-// Fonction pour filtrer les recettes en fonction de la recherche
-function filtrerRecettes(searchValue) {
-    const recettesFiltrees = recettesData.filter(recette => {
-        const hasName = recette.name.toLowerCase().includes(searchValue);
-        const hasIngredient = recette.ingredients.some(ing => ing.ingredient.toLowerCase().includes(searchValue));
-        const hasUstensil = recette.ustensils.some(ustensil => ustensil.toLowerCase().includes(searchValue));
+// Fonction pour remplir les suggestions d'autocomplétion
+function remplirSuggestions() {
+    const allIngredients = new Set();
+    const allAppliances = new Set();
+    const allUstensils = new Set();
 
-        return hasName || hasIngredient || hasUstensil;
+    recettesData.forEach(recette => {
+        recette.ingredients.forEach(ing => allIngredients.add(ing.ingredient));
+        allAppliances.add(recette.appliance);
+        recette.ustensils.forEach(ustensil => allUstensils.add(ustensil));
     });
 
+    // Ajouter les écouteurs d'événements pour les filtres avancés
+    ingredientFilter.addEventListener("input", filtrerRecettes);
+    applianceFilter.addEventListener("input", filtrerRecettes);
+    ustensilFilter.addEventListener("input", filtrerRecettes);
+}
+
+// Fonction de filtrage des recettes combinant le filtre général et les filtres avancés
+function filtrerRecettes() {
+    // Obtenir les valeurs des filtres
+    const searchValue = document.getElementById("myInput").value.toLowerCase();
+    const ingredientValue = ingredientFilter.value.toLowerCase();
+    const applianceValue = applianceFilter.value.toLowerCase();
+    const ustensilValue = ustensilFilter.value.toLowerCase();
+
+    // Appliquer d'abord le filtre général (recherche dans le nom, ingrédients ou ustensiles)
+    let recettesFiltrees = recettesData.filter(recette => {
+        return (
+            searchValue === "" ||
+            recette.name.toLowerCase().includes(searchValue) ||
+            recette.ingredients.some(ing => ing.ingredient.toLowerCase().includes(searchValue)) ||
+            recette.ustensils.some(ustensil => ustensil.toLowerCase().includes(searchValue))
+        );
+    });
+
+    // Appliquer les filtres avancés sur les résultats du filtre général
+    recettesFiltrees = recettesFiltrees.filter(recette => {
+        const matchesIngredient = ingredientValue === "" || recette.ingredients.some(ing => ing.ingredient.toLowerCase().includes(ingredientValue));
+        const matchesAppliance = applianceValue === "" || recette.appliance.toLowerCase().includes(applianceValue);
+        const matchesUstensil = ustensilValue === "" || recette.ustensils.some(ustensil => ustensil.toLowerCase().includes(ustensilValue));
+
+        // La recette doit correspondre à tous les filtres actifs
+        return matchesIngredient && matchesAppliance && matchesUstensil;
+    });
+
+    // Afficher les recettes filtrées et mettre à jour le compteur
     afficherRecettes(recettesFiltrees);
     mettreAJourCompteur(recettesFiltrees);
 }
 
+// Ajouter un écouteur d'événement pour le champ de recherche général dans le header
+document.getElementById("myInput").addEventListener("input", filtrerRecettes);
