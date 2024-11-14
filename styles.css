@@ -81,6 +81,10 @@ h3 {
     width: 200px;
 }
 
+#recipe-count {
+    font-size: 1.2em;
+    margin-left: 10px; /* Pour ajouter un peu d'espace entre les filtres et le compteur */
+}
 
 @media (max-width: 768px) {
     #recettes-container {

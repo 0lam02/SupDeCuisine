@@ -76,6 +76,11 @@ function remplirSuggestions() {
     ustensilFilter.addEventListener("input", () => filtrerRecettes());
 }
 
+function mettreAJourCompteur(recettesFiltrees) {
+    const recipeCountElement = document.getElementById("recipe-count");
+    recipeCountElement.textContent = `${recettesFiltrees.length} recette${recettesFiltrees.length > 1 ? 's' : ''}`;
+}
+
 // Fonction de filtrage des recettes
 function filtrerRecettes() {
     const ingredientValue = ingredientFilter.value.toLowerCase();
@@ -91,4 +96,9 @@ function filtrerRecettes() {
     });
 
     afficherRecettes(recettesFiltrees);
+    mettreAJourCompteur(recettesFiltrees);  // Mettre à jour le compteur
 }
+
+
+
+
