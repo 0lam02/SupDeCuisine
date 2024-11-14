@@ -2,9 +2,8 @@ const recettesContainer = document.getElementById("recettes-container");
 const ingredientFilter = document.getElementById("ingredient-filter");
 const applianceFilter = document.getElementById("appliance-filter");
 const ustensilFilter = document.getElementById("ustensil-filter");
+const recettesCompteur = document.getElementById("recettes-compteur"); // Nouvelle référence au compteur
 let recettesData = [];
-
-exports = { afficherRecettes, filtrerRecettes, mettreAJourCompteur };
 
 // Charger les données JSON
 fetch("recipes.json")
@@ -12,7 +11,8 @@ fetch("recipes.json")
     .then(data => {
         recettesData = data;
         afficherRecettes(data);
-        remplirSuggestions(); // Remplir les suggestions pour l'autocomplétion
+        mettreAJourCompteur(data); // Afficher le compteur initial
+        remplirSuggestions();
     })
     .catch(error => console.error("Erreur:", error));
 
@@ -20,7 +20,6 @@ fetch("recipes.json")
 function afficherRecettes(recettes) {
     recettesContainer.innerHTML = ""; // Vider le conteneur
     if (recettes.length === 0) {
-        // Afficher un message s'il n'y a pas de résultats
         recettesContainer.innerHTML = `<p>Aucune recette ne correspond à votre recherche.</p>`;
     } else {
         recettes.forEach(recette => {
@@ -62,13 +61,14 @@ function afficherRecettes(recettes) {
 
             recettesContainer.appendChild(card);
         });
+
     }
 }
 
-// Fonction pour mettre à jour le compteur de recettes affichées
-function mettreAJourCompteur(recettes) {
-    const compteur = document.getElementById("recettes-compteur");
-    compteur.textContent = `${recettes.length} recette(s) trouvée(s)`;
+// Fonction pour mettre à jour le compteur
+function mettreAJourCompteur(recettesFiltrees) {
+    const recipeCountElement = document.getElementById("recipe-count");
+    recipeCountElement.textContent = `${recettesFiltrees.length} recette${recettesFiltrees.length > 1 ? 's' : ''}`;
 }
 
 // Fonction pour remplir les suggestions d'autocomplétion
@@ -125,4 +125,4 @@ function filtrerRecettes() {
 // Ajouter un écouteur d'événement pour le champ de recherche général dans le header
 document.getElementById("myInput").addEventListener("input", filtrerRecettes);
 
-
+exports = { afficherRecettes, filtrerRecettes, mettreAJourCompteur };
